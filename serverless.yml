@@ -1,0 +1,41 @@
+service: hotspot-ms
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  stage: dev
+  region: eu-central-1
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - ssm:GetParameter*
+      Resource: '*'
+
+functions:
+  candidateSubmission:
+    handler: dist/index.handler
+    memorySize: 128
+    events:
+      - http:
+          path: hotspots
+          method: get
+          request:
+            parameters:
+              querystrings:
+                lat: false
+                lon: false
+                radius: false
+  nearbySponsors:
+    handler: dist/index.nearbySponsors
+    memorySize: 128
+    events:
+      - http:
+          path: nearbySponsors
+          method: get
+          request:
+            parameters:
+              querystrings:
+                lat: false
+                lon: false
+                keyword: false
+          
